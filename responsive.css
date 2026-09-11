@@ -1,0 +1,49 @@
+/* Fine-tuned mobile sizing keeps both states inside a medium mobile viewport. */
+@media (max-width: 430px) {
+  body { background: var(--cream); }
+  .demo-wrap { min-height: 100svh; padding: 0; display: block; }
+  .demo-label, .desktop-hint { display: none; }
+  .phone { width: 100vw; height: 100svh; min-height: 690px; max-height: 844px; border: 0; border-radius: 0; box-shadow: none; }
+}
+
+@media (max-height: 760px) and (min-width: 431px) {
+  .phone { transform: scale(.86); transform-origin: center center; }
+}
+
+@media (max-height: 790px) {
+  .app-view { padding-bottom: 8px; }
+  .hero-scene { height: 236px; flex-basis: 236px; }
+  .hero-blob { width: 242px; height: 198px; left: 46px; top: 22px; }
+  .hero-bag { width: 188px; height: 188px; left: 75px; top: 27px; }
+  .hero-tomato { width: 67px; height: 67px; left: 56px; top: 125px; }
+  .hero-banana { width: 67px; height: 67px; left: 44px; top: 32px; }
+  .hero-milk { width: 63px; height: 63px; right: 31px; top: 59px; }
+  .corner-a { left: 91px; top: 73px; }.corner-b { right: 83px; top: 73px; }.corner-c { left: 91px; top: 153px; }.corner-d { right: 83px; top: 153px; }
+  .speech-bubble { bottom: 5px; }
+}
+
+@media (max-height: 730px) {
+  .status-bar { height: 30px; padding-top: 7px; }
+  .app-view { inset: 30px 0 0; }
+  .app-header { height: 39px; }
+  .welcome-content, .loading-content, .result-content { height: calc(100% - 39px); }
+  h1 { font-size: 28px; margin-top: 6px; }
+  .lead { margin-top: 6px; font-size: 13px; }
+  .hero-scene { height: 205px; flex-basis: 205px; margin-top: 0; }
+  .hero-blob { width: 220px; height: 175px; left: 57px; top: 16px; }
+  .hero-bag { width: 164px; height: 164px; left: 87px; top: 21px; }
+  .hero-tomato { width: 58px; height: 58px; left: 66px; top: 110px; }
+  .hero-banana { width: 56px; height: 56px; left: 57px; top: 24px; }
+  .hero-milk { width: 54px; height: 54px; right: 41px; top: 46px; }
+  .corner-a { left: 102px; top: 55px; }.corner-b { right: 93px; top: 55px; }.corner-c { left: 102px; top: 125px; }.corner-d { right: 93px; top: 125px; }
+  .speech-bubble { right: 5px; bottom: 0; padding: 7px 10px; font-size: 10px; }
+  .mini-steps { margin-bottom: 3px; }
+  .mini-steps > div { font-size: 9px; }.mini-steps svg { width: 22px; height: 22px; }.step-face { height: 22px; font-size: 22px; line-height: 20px; }
+  .picker-heading { font-size: 8px; }.product-picker { margin-bottom: 4px; }.product-card { height: 45px; }.product-card svg { width: 35px; height: 35px; }.product-card span { font-size: 7px; }
+  .primary-button { min-height: 48px; }.under-button { margin-top: 3px; font-size: 9px; }
+  .result-content { gap: 5px; }
+  .result-hero { min-height: 91px; }.result-hero h2 { font-size: 25px; }.result-art-wrap { width: 91px; height: 91px; }.result-art-wrap .result-tomato { width: 62px; height: 62px; }.result-art-wrap .result-bag { width: 68px; height: 68px; }
+  .nutrition-card { padding: 7px 9px 5px; }.nutrition-head { padding-bottom: 4px; }.nutrition-cell { min-height: 43px; }.nutrition-cell strong { font-size: 13px; }.fiber-line { padding-top: 4px; }
+  .advice-card { min-height: 128px; padding: 9px 11px 8px; }.advice-card h3 { font-size: 16px; }.advice-card p { font-size: 11px; }.advice-joke { margin-top: 5px; font-size: 9px; }
+  .bonus-line { min-height: 32px; }.gift-badge { width: 27px; height: 27px; }.gift-badge svg { width: 24px; height: 24px; }.bonus-line b { font-size: 12px; }.bonus-line small { font-size: 9px; }.result-button { min-height: 47px; }.secondary-button { min-height: 22px; }
+}
