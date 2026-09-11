@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#FCF9E8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FCF9E8">
   <title>Вкусный знак</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="polish.css" />
-  <link rel="preload" href="assets/mascot-hero.png" as="image" />
-  <link rel="preload" href="assets/mascot-result.png" as="image" />
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="polish.css">
+  <link rel="preload" href="assets/mascot-hero.png" as="image">
+  <link rel="preload" href="assets/mascot-result.png" as="image">
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 </head>
@@ -22,89 +22,56 @@
           <div class="brand"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>Вкусный знак</span></div>
           <button class="close-btn" data-close aria-label="Закрыть">×</button>
         </header>
-
         <div class="welcome-body">
           <div class="tag">Совет дня <b>+</b> шанс на бонус <em>✦</em></div>
           <h1>Ну-ка, что<br>у тебя вкусного?</h1>
           <p class="intro">Отсканируй продукт — подскажу,<br>что внутри и с чем его съесть.</p>
-
-          <div class="hero-art" aria-label="Томатчик с продуктами">
-            <img src="mascot-hero.png" width="700" height="692" alt="Зелёный маскот с продуктами" decoding="async">
+          <div class="hero-art" aria-label="Томатчик с продуктами"><img src="assets/mascot-hero.png" width="700" height="659" alt="Томатчик с продуктами" decoding="async"></div>
+          <div class="steps">
+            <div class="step"><span class="step-icon"><svg viewBox="0 0 24 24"><path d="M7 3H4a1 1 0 0 0-1 1v3M17 3h3a1 1 0 0 1 1 1v3M7 21H4a1 1 0 0 1-1-1v-3M17 21h3a1 1 0 0 0 1-1v-3"/><circle cx="12" cy="12" r="4"/></svg></span><span>Сканируй</span></div>
+            <div class="step-arrow">→</div>
+            <div class="step"><span class="step-icon"><svg viewBox="0 0 24 24"><path d="M4 7.5 12 3l8 4.5L12 12 4 7.5Z"/><path d="M4 12.5 12 17l8-4.5M4 17l8 4 8-4"/></svg></span><span>Узнавай</span></div>
+            <div class="step-arrow">→</div>
+            <div class="step"><span class="step-icon"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 7.5h14M5 16.5h14M7 3c3 3 3 6 0 9s-3 6 0 9M17 3c-3 3-3 6 0 9s3 6 0 9"/></svg></span><span>Лови бонус</span></div>
           </div>
-
-          <div class="steps"><div><strong>⌗</strong><span>Сканируй</span></div><b>→</b><div><strong>☺</strong><span>Узнавай</span></div><b>→</b><div><strong>♧</strong><span>Лови бонус</span></div></div>
-
           <div class="mascot-message"><span class="message-icon">✦</span><div><b>Томатчик поможет разобраться</b><span>Сканируй продукт — увидишь состав, БЖУ и вкусную идею.</span></div></div>
-
           <button class="primary" id="openCamera"><span class="scan-icon">⌗</span>Открыть камеру</button>
-          <p class="under-cta">Покажи продукт маскоту — он попробует узнать его</p>
+          <p class="under-cta">Покажи продукт Томатчику — он попробует узнать его</p>
         </div>
       </section>
 
       <section class="screen camera-screen" id="cameraScreen">
-        <header class="topbar">
-          <div class="brand"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>Вкусный знак</span></div>
-          <button class="close-btn" data-close aria-label="Закрыть">×</button>
-        </header>
+        <header class="topbar"><div class="brand"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>Вкусный знак</span></div><button class="close-btn" data-close aria-label="Закрыть">×</button></header>
         <div class="camera-body">
           <div class="camera-label"><span>●</span> Наведи камеру на продукт</div>
           <h2>Поймаем<br>вкусный знак!</h2>
-          <div class="camera-window" id="cameraWindow">
-            <video id="video" autoplay playsinline muted></video>
-            <div class="camera-empty"><div class="camera-empty-icon">⌗</div><b>Камера готовится</b><span>Разреши доступ и покажи один продукт</span></div>
-            <div class="scan-frame"><i></i><i></i><i></i><i></i></div>
-            <div class="scan-line"></div>
-            <div class="eye-bubble">👀</div>
-          </div>
-          <div class="camera-hint"><b>Совет маскота:</b> покажи один продукт без упаковки. Фото остаётся в браузере. Штрихкоды пока не читаю.</div>
+          <div class="camera-window" id="cameraWindow"><video id="video" autoplay playsinline muted></video><div class="camera-empty"><div class="camera-empty-icon">⌗</div><b>Камера готовится</b><span>Разреши доступ и покажи один продукт</span></div><div class="scan-frame"><i></i><i></i><i></i><i></i></div><div class="scan-line"></div><div class="eye-bubble">👀</div></div>
+          <div class="camera-hint"><b>Совет Томатчика:</b> покажи один продукт без упаковки. Фотография остаётся в браузере. Штрихкоды пока не читаю.</div>
           <button class="primary camera-cta" id="recognize" disabled><span class="scan-icon">⌗</span>Распознать продукт</button>
-          <label class="photo-link" for="photoInput">Или выбрать фото продукта</label>
-          <input id="photoInput" type="file" accept="image/*" capture="environment">
+          <label class="photo-link" for="photoInput">Или выбрать фото продукта</label><input id="photoInput" type="file" accept="image/*" capture="environment">
         </div>
       </section>
 
       <section class="screen analysis-screen" id="analysisScreen">
-        <header class="topbar">
-          <div class="brand"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>Вкусный знак</span></div>
-          <button class="close-btn" data-close aria-label="Закрыть">×</button>
-        </header>
-        <div class="analysis-body">
-          <div class="analysis-art"><div class="orbit"></div><img class="analysis-mascot" src="mascot-result.png" width="300" height="288" alt="Томатчик старается"></div>
-          <h2 id="analysisTitle">Разглядываю. Я пока маленький…</h2>
-          <p id="analysisSubtitle">Томатчик сверяет продукт, калории и БЖУ</p>
-          <div class="progress"><span></span></div>
-          <div class="analysis-joke" id="analysisJoke">Большое старание в маленьком пакетике 💚</div>
-          <p class="analysis-note">Не закрывай экран — знакомство займёт ещё немного времени</p>
-        </div>
+        <header class="topbar"><div class="brand"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>Вкусный знак</span></div><button class="close-btn" data-close aria-label="Закрыть">×</button></header>
+        <div class="analysis-body"><div class="analysis-art"><div class="orbit"></div><img class="analysis-mascot" src="assets/mascot-result.png" width="300" height="288" alt="Томатчик старается"></div><h2 id="analysisTitle">Проверяю продукт…</h2><p id="analysisSubtitle">Томатчик сравнивает форму, цвет и детали</p><div class="progress"><span></span></div><div class="analysis-joke" id="analysisJoke">Ещё секундочку — хочу дать точный совет 💚</div><p class="analysis-note">Не закрывай экран — знакомство займёт ещё немного времени</p></div>
       </section>
 
       <section class="screen result-screen" id="resultScreen">
-        <header class="topbar">
-          <div class="brand"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>Вкусный знак</span></div>
-          <button class="close-btn" data-close aria-label="Закрыть">×</button>
-        </header>
+        <header class="topbar"><div class="brand"><span class="brand-mark"><i></i><i></i><i></i><i></i></span><span>Вкусный знак</span></div><button class="close-btn" data-close aria-label="Закрыть">×</button></header>
         <div class="result-body">
           <div class="result-status" id="resultStatus">● Похоже, это помидор</div>
-          <div class="result-heading"><div><h2 id="resultTitle">Кажется,<br>у нас томатч!</h2><p id="resultMood">Проверь меня: я ещё могу перепутать</p></div><div class="result-art"><img src="mascot-result.png" width="300" height="288" alt="Томатчик и его друг помидор" decoding="async"></div></div>
-
-          <section class="nutrition" id="nutrition">
-            <div class="nutrition-head"><b>Что внутри</b><span>На 100 г</span></div>
-            <div class="nutrition-grid"><div class="kcal"><strong id="kcal">18</strong><span>ккал</span></div><div><strong id="protein">0,9 г</strong><span>Белки</span></div><div><strong id="fat">0,2 г</strong><span>Жиры</span></div><div><strong id="carbs">3,9 г</strong><span>Углеводы</span></div></div>
-            <div class="fiber"><span>Клетчатка</span><b id="fiber">1,2 г</b><i>•</i><small id="nutritionNote">≈ Средние значения</small></div>
-          </section>
-
+          <div class="result-heading"><div><h2 id="resultTitle">Кажется,<br>у нас томатч!</h2><p id="resultMood">Проверь меня: я ещё могу перепутать</p></div><div class="result-art"><img src="assets/mascot-result.png" width="300" height="288" alt="Томатчик и его друг помидор" decoding="async"></div></div>
+          <section class="nutrition" id="nutrition"><div class="nutrition-head"><b>Что внутри</b><span>На 100 г</span></div><div class="nutrition-grid"><div class="kcal"><strong id="kcal">18</strong><span>ккал</span></div><div><strong id="protein">0,9 г</strong><span>Белки</span></div><div><strong id="fat">0,2 г</strong><span>Жиры</span></div><div><strong id="carbs">3,9 г</strong><span>Углеводы</span></div></div><div class="fiber"><span>Клетчатка</span><b id="fiber">1,2 г</b><i>•</i><small id="nutritionNote">≈ Средние значения</small></div></section>
           <section class="advice"><small id="adviceEyebrow">ИДЕЯ ДЛЯ ПЕРЕКУСА</small><h3 id="adviceTitle">Томат ищет компанию</h3><p id="adviceText">Добавь цельнозерновой тост и творог или хумус: больше белка и клетчатки, а перекус — сытнее.</p><b id="adviceJoke">Вкусно. Сытно. Без диетических драм. 😎</b></section>
-
-          <div class="gift-line"><span>♧</span><div><b id="giftTitle">Не узнал? Не обижайся!</b><small id="giftText">Ты всё равно помог маскоту стать умнее 🎁</small></div></div>
-          <button class="primary" id="bonus">Посмотреть бонус <span>🎁</span></button>
-          <button class="again" id="again">Переснять продукт</button>
+          <div class="gift-line"><span>♧</span><div><b id="giftTitle">Если я ошибся — не обижайся!</b><small id="giftText">Ты помог Томатчику стать умнее — держи подарок 🎁</small></div></div>
+          <button class="primary" id="bonus">Посмотреть бонус <span>🎁</span></button><button class="again" id="again">Переснять продукт</button>
         </div>
       </section>
-
       <div class="toast" id="toast" role="status"></div>
     </section>
     <p class="outside-note">В демо распознавание работает в браузере. Для продакшена подключается модель продуктов «Перекрёстка».</p>
   </main>
-  <script src="app.js"></script>
+  <script src="app-v2.js"></script>
 </body>
 </html>
