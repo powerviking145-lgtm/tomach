@@ -1,0 +1,29 @@
+/* Real, limited on-device image classification. No photo uploads. */
+const $ = s => document.querySelector(s);
+let model, stream, generation=0;
+const view=id=>{document.querySelectorAll('.app-view').forEach(v=>v.classList.toggle('is-hidden',v.id!==id));};
+const say=s=>{ $('#toast').textContent=s; $('#toast').classList.add('is-visible'); setTimeout(()=>$('#toast').classList.remove('is-visible'),4000); };
+const stop=()=>{stream?.getTracks().forEach(t=>t.stop());stream=null;};
+function home(){generation++;stop();view('welcomeView');}
+async function camera(){const token=++generation;view('cameraView');$('#captureButton').disabled=true;
+try{const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});if(token!==generation){s.getTracks().forEach(t=>t.stop());return;}stream=s;$('#cameraVideo').srcObject=s;await $('#cameraVideo').play();$('.camera-frame').classList.add('has-video');$('#captureButton').disabled=false;}catch{say('Не удалось открыть камеру. Разреши доступ или выбери фото.');}}
+async function classify(image){const token=++generation;stop();view('loadingView');$('#loadingProductArt').innerHTML='<svg><use href="#bag"></use></svg>';
+const messages=['Разглядываю. Я пока маленький…','Листаю свою вкусную энциклопедию…','Могу перепутать. Проверим вместе?'];let i=0;$('#loadingTitle').textContent=messages[0];$('#loadingSubtitle').textContent='Фото остаётся в браузере. Первая загрузка модели дольше.';$('#loadingJoke').textContent='Большое старание в маленьком пакетике 💚';
+const timer=setInterval(()=>{$('#loadingTitle').textContent=messages[Math.min(++i,2)];},2500);
+let predictions,error;
+await Promise.all([new Promise(r=>setTimeout(r,7500)),(async()=>{try{if(!window.mobilenet)throw Error();model=await Promise.race([model||mobilenet.load({version:2,alpha:1}),new Promise((_,r)=>setTimeout(()=>r(Error('timeout')),45000))]);predictions=await model.classify(image,3);}catch{error=true;}})()]);clearInterval(timer);if(token!==generation)return;
+const best=predictions?.[0];let name=null;
+if(best?.probability>=.65){const label=best.className.toLowerCase();if(label.includes('banana'))name='banana';else if(label.includes('orange'))name='orange';else if(label.includes('broccoli'))name='broccoli';else if(label.includes('cucumber'))name='cucumber';else if(label.includes('bell pepper'))name='pepper';}
+render(name,error);}
+const foods={banana:['банан','Бананально, но вкусно!','89','1,1','0,3','22,8','2,6','Банан зовёт компанию','Добавь натуральный йогурт и овсяные хлопья: белок и клетчатка сделают перекус сытнее.'],orange:['апельсин','Оранжевое настроение!','47','0,9','0,1','11,8','2,4','Дольки радости','Добавь апельсин к йогурту без добавленного сахара. Целый фрукт сохраняет больше клетчатки, чем сок.'],broccoli:['брокколи','Кудрявый знакомец!','34','2,8','0,4','6,6','2,6','Зелёная компания','Приготовь на пару и добавь к крупе и рыбе или фасоли. Получится разнообразный обед.'],cucumber:['огурец','Хруст — и знакомы!','15','0,7','0,1','3,6','0,5','Хрустящий перекус','Огурец, хумус и цельнозерновой хлеб — простой перекус с белком и клетчаткой.'],pepper:['сладкий перец','Перчик, но не острый!','31','1,0','0,3','6,0','2,1','Добавим цвета','Нарежь перец полосками и подай с хумусом. Или добавь к салату с фасолью.']};
+function render(key,error){view('resultView');const f=foods[key];$('.nutrition-card').hidden=!f;$('.recognized').firstElementChild.style.display=f?'':'none';$('.recognized span').textContent=f?'Похоже, это '+f[0]:'Пока не узнал';$('#resultTitle').textContent=f?f[1]:'Ой. Я ещё росточек!';$('#resultMood').textContent=f?'Проверь: я мог перепутать':'Не буду придумывать БЖУ';$('#resultArt').innerHTML='<svg style="width:100%;height:100%"><use href="#bag"></use></svg>';
+if(f){['kcal','protein','fat','carbs','fiber'].forEach((id,i)=>$('#'+id).textContent=f[i+2]+(i?' г':''));$('#nutritionNote').textContent='≈ Для сырого продукта';}
+$('#adviceEyebrow').textContent=f?'ИДЕЯ ДЛЯ ПЕРЕКУСА':'МАЛЕНЬКИЙ МАСКОТ · БОЛЬШИЕ СТАРАНИЯ';$('#adviceTitle').textContent=f?f[7]:'Знаю пока не всё';$('#adviceText').textContent=f?f[8]:(error?'Не смог загрузить распознавание. Проверь интернет и попробуй снова.':'Это может быть незнакомая еда, не еда или неудачный ракурс. Покажи один продукт поближе, без упаковки.');$('#adviceJoke').textContent='Заглядывай ещё — будем знакомиться с едой вместе!';$('.bonus-line b').textContent='Я ещё росточек. А подарок — взрослый!';$('.bonus-line small').textContent='Демо: проверь предложения в приложении';}
+document.addEventListener('DOMContentLoaded',()=>{
+$('#scanButton').onclick=camera;$('#captureButton').onclick=()=>{const v=$('#cameraVideo');if(!v.videoWidth)return say('Подожди, камера ещё готовится');const c=document.createElement('canvas');c.width=640;c.height=Math.round(v.videoHeight/v.videoWidth*640);c.getContext('2d').drawImage(v,0,0,c.width,c.height);classify(c);};
+$('#photoInput').onchange=async e=>{const file=e.target.files[0];if(!file)return;const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{classify(img).finally(()=>URL.revokeObjectURL(url));};img.onerror=()=>{URL.revokeObjectURL(url);say('Не удалось прочитать фото. Попробуй JPEG или PNG.');};img.src=url;e.target.value='';};
+document.querySelectorAll('[data-action="close"]').forEach(b=>b.onclick=home);$('#bonusButton').onclick=()=>{location.href='tsxapp://app/personal_offers_list';say('Переход доступен в приложении «Перекрёсток». Бонус в демо не начисляется.');};
+const again=document.createElement('button');again.className='secondary-button';again.textContent='Переснять / я ошибся';again.onclick=camera;$('.result-content').append(again);
+$('.mascot-note div span').textContent='Могу путаться и чего-то не знать. Заходи ещё и помогай мне знакомиться с продуктами!';$('.desktop-hint').textContent='Распознавание в браузере · ограниченный набор еды · фото не отправляются';
+});
+window.addEventListener('pagehide',stop);

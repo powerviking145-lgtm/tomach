@@ -8,6 +8,8 @@
   <title>Вкусный знак</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="responsive.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 </head>
 <body>
   <!-- SVG-иллюстрации сделаны прямо в прототипе, поэтому он работает без сборки и внешних картинок. -->
@@ -121,8 +123,8 @@
 
         <div class="welcome-content">
           <div class="pill pill-lime"><span>Совет дня</span><b>+</b><span>шанс на бонус</span><i>✦</i></div>
-          <h1>Ну-ка, что<br />у тебя вкусного?</h1>
-          <p class="lead">Сканируй продукт — узнай калории,<br class="wide-only" /> БЖУ и с чем его вкусно сочетать.</p>
+            <h1>Ну-ка, что<br />у тебя вкусного?</h1>
+          <p class="lead">Отсканируй продукт — подскажу,<br class="wide-only" /> что внутри и с чем его съесть.</p>
 
           <div class="hero-scene" aria-label="Маскот с продуктами">
             <div class="hero-blob"></div>
@@ -141,11 +143,32 @@
             <div><svg><use href="#icon-gift"></use></svg><span>Лови бонус</span></div>
           </div>
 
-          <div class="picker-heading"><span>Или ткни в продукт — камера подождёт</span><span class="wiggle">☝</span></div>
-          <div class="product-picker" id="productPicker" role="list"></div>
+          <div class="mascot-note"><span class="mascot-note-icon">!</span><div><b>Маскот ещё совсем маленький</b><span>Может чего-то не знать или перепутать. Каждый скан помогает ему узнать больше продуктов!</span></div></div>
 
-          <button class="primary-button" id="scanButton"><svg><use href="#icon-scan"></use></svg><span>Сканировать продукт</span></button>
-          <div class="under-button">Наведи камеру на штрихкод</div>
+          <button class="primary-button" id="scanButton"><svg><use href="#icon-scan"></use></svg><span>Открыть камеру</span></button>
+          <div class="under-button">Покажи продукт маскоту — он попробует узнать его</div>
+        </div>
+      </div>
+
+      <div class="app-view is-hidden" id="cameraView">
+        <header class="app-header">
+          <div class="brand"><svg class="brand-mark"><use href="#mark"></use></svg><span>Вкусный знак</span></div>
+          <button class="icon-button" data-action="close" aria-label="Закрыть"><svg><use href="#icon-close"></use></svg></button>
+        </header>
+        <div class="camera-content">
+          <div class="camera-topline"><span class="camera-check">●</span> Наведи камеру на продукт</div>
+          <h2>Поймаем<br />вкусный знак!</h2>
+          <div class="camera-frame">
+            <video id="cameraVideo" autoplay playsinline muted></video>
+            <div class="camera-placeholder" id="cameraPlaceholder"><svg><use href="#icon-scan"></use></svg><b>Камера готовится</b><span>Разреши доступ — и покажи один продукт</span></div>
+            <div class="camera-corners camera-corner-tl"></div><div class="camera-corners camera-corner-tr"></div><div class="camera-corners camera-corner-bl"></div><div class="camera-corners camera-corner-br"></div>
+            <div class="camera-line"></div>
+            <div class="camera-mascot">👀</div>
+          </div>
+          <div class="camera-tip"><b>Совет маскота:</b> покажи упаковку целиком или штрихкод. Он ещё малыш, но очень старается!</div>
+          <button class="primary-button capture-button" id="captureButton"><svg><use href="#icon-scan"></use></svg><span>Распознать продукт</span></button>
+          <label class="camera-fallback" for="photoInput">Или выбрать фото продукта</label>
+          <input id="photoInput" type="file" accept="image/*" capture="environment" />
         </div>
       </div>
 
@@ -194,17 +217,16 @@
             <div class="advice-joke" id="adviceJoke">Вкусно. Сытно. Без диетических драм. 😎</div>
           </section>
 
-          <div class="bonus-line"><div class="gift-badge"><svg><use href="#icon-gift"></use></svg><span>✦</span></div><div><b>Тебе ещё и бонус!</b><small>В персональных предложениях</small></div></div>
+          <div class="bonus-line"><div class="gift-badge"><svg><use href="#icon-gift"></use></svg><span>✦</span></div><div><b>Не узнал? Не обижайся!</b><small>Ты всё равно помог маскоту стать умнее 🎁</small></div></div>
           <button class="primary-button result-button" id="bonusButton"><span>Посмотреть бонус</span><span class="button-gift">🎁</span></button>
-          <button class="secondary-button" id="againButton">Выбрать другой продукт</button>
         </div>
       </div>
 
       <div class="toast" id="toast" role="status"></div>
     </section>
-    <p class="desktop-hint">Нажимай на карточки продуктов, запускай «сканирование» и проверяй бонус 💚</p>
+    <p class="desktop-hint">Камера и распознавание в браузере · прототип ограниченного набора продуктов</p>
   </main>
 
-  <script src="app.js"></script>
+  <script src="vision.js"></script>
 </body>
 </html>
