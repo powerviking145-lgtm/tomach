@@ -7,8 +7,8 @@
   <title>Вкусный знак</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="polish.css" />
-  <link rel="preload" href="mascot-hero.png" as="image" />
-  <link rel="preload" href="mascot-result.png" as="image" />
+  <link rel="preload" href="assets/mascot-hero.png" as="image" />
+  <link rel="preload" href="assets/mascot-result.png" as="image" />
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
 </head>
@@ -28,13 +28,13 @@
           <h1>Ну-ка, что<br>у тебя вкусного?</h1>
           <p class="intro">Отсканируй продукт — подскажу,<br>что внутри и с чем его съесть.</p>
 
-          <div class="hero-art" aria-label="Маскот с продуктами">
+          <div class="hero-art" aria-label="Томатчик с продуктами">
             <img src="mascot-hero.png" width="700" height="692" alt="Зелёный маскот с продуктами" decoding="async">
           </div>
 
           <div class="steps"><div><strong>⌗</strong><span>Сканируй</span></div><b>→</b><div><strong>☺</strong><span>Узнавай</span></div><b>→</b><div><strong>♧</strong><span>Лови бонус</span></div></div>
 
-          <div class="mascot-message"><span class="message-icon">✦</span><div><b>Маскот поможет разобраться</b><span>Сканируй продукт — увидишь состав, БЖУ и вкусную идею.</span></div></div>
+          <div class="mascot-message"><span class="message-icon">✦</span><div><b>Томатчик поможет разобраться</b><span>Сканируй продукт — увидишь состав, БЖУ и вкусную идею.</span></div></div>
 
           <button class="primary" id="openCamera"><span class="scan-icon">⌗</span>Открыть камеру</button>
           <p class="under-cta">Покажи продукт маскоту — он попробует узнать его</p>
@@ -69,9 +69,9 @@
           <button class="close-btn" data-close aria-label="Закрыть">×</button>
         </header>
         <div class="analysis-body">
-          <div class="analysis-art"><div class="orbit"></div><img class="analysis-mascot" src="mascot-result.png" width="300" height="288" alt="Маскот старается"></div>
+          <div class="analysis-art"><div class="orbit"></div><img class="analysis-mascot" src="mascot-result.png" width="300" height="288" alt="Томатчик старается"></div>
           <h2 id="analysisTitle">Разглядываю. Я пока маленький…</h2>
-          <p id="analysisSubtitle">Маскот сверяет продукт, калории и БЖУ</p>
+          <p id="analysisSubtitle">Томатчик сверяет продукт, калории и БЖУ</p>
           <div class="progress"><span></span></div>
           <div class="analysis-joke" id="analysisJoke">Большое старание в маленьком пакетике 💚</div>
           <p class="analysis-note">Не закрывай экран — знакомство займёт ещё немного времени</p>
@@ -85,7 +85,7 @@
         </header>
         <div class="result-body">
           <div class="result-status" id="resultStatus">● Похоже, это помидор</div>
-          <div class="result-heading"><div><h2 id="resultTitle">Кажется,<br>у нас томатч!</h2><p id="resultMood">Проверь меня: я ещё могу перепутать</p></div><div class="result-art"><img src="mascot-result.png" width="300" height="288" alt="Маскот и его друг помидор" decoding="async"></div></div>
+          <div class="result-heading"><div><h2 id="resultTitle">Кажется,<br>у нас томатч!</h2><p id="resultMood">Проверь меня: я ещё могу перепутать</p></div><div class="result-art"><img src="mascot-result.png" width="300" height="288" alt="Томатчик и его друг помидор" decoding="async"></div></div>
 
           <section class="nutrition" id="nutrition">
             <div class="nutrition-head"><b>Что внутри</b><span>На 100 г</span></div>
