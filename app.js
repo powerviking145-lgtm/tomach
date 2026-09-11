@@ -1,181 +1,35 @@
-const PRODUCTS = {
-  tomato: {
-    id: 'tomato',
-    name: 'помидор',
-    label: 'Помидор',
-    art: 'tomato',
-    title: 'Кажется,<br>у нас томатч!',
-    mood: 'Сочный знакомец найден',
-    kcal: '18', protein: '0,9 г', fat: '0,2 г', carbs: '3,9 г', fiber: '1,2 г',
-    note: 'Средние значения',
-    adviceEyebrow: 'ИДЕЯ ДЛЯ ПЕРЕКУСА',
-    adviceTitle: 'Томат ищет компанию',
-    adviceText: 'Добавь цельнозерновой тост и творог или хумус: больше белка и клетчатки, а перекус — сытнее.',
-    adviceJoke: 'Вкусно. Сытно. Без диетических драм. 😎'
-  },
-  banana: {
-    id: 'banana',
-    name: 'банан',
-    label: 'Банан',
-    art: 'banana',
-    title: 'Бананально,<br>но гениально!',
-    mood: 'Мягкий заряд найден',
-    kcal: '89', protein: '1,1 г', fat: '0,3 г', carbs: '22,8 г', fiber: '2,6 г',
-    note: 'Средние значения',
-    adviceEyebrow: 'ИДЕЯ ДЛЯ ПЕРЕКУСА',
-    adviceTitle: 'Банан зовёт овсянку',
-    adviceText: 'Нарежь банан к овсянке или йогурту. Орехи добавят хруста и немного белка.',
-    adviceJoke: 'Жёлтый, весёлый, без сложных манёвров 🍌'
-  },
-  milk: {
-    id: 'milk',
-    name: 'молоко',
-    label: 'Молоко',
-    art: 'milk',
-    title: 'Молочный,<br>но с характером!',
-    mood: 'Белковый знакомец найден',
-    kcal: '52', protein: '3,0 г', fat: '2,5 г', carbs: '4,7 г', fiber: '0 г',
-    note: 'для молока 2,5%',
-    adviceEyebrow: 'ИДЕЯ ДЛЯ ПЕРЕКУСА',
-    adviceTitle: 'Молоку нужен напарник',
-    adviceText: 'Соедини с цельнозерновыми хлопьями и ягодами — будет и вкусно, и сытнее.',
-    adviceJoke: 'Кальций пришёл, скуку не захватил 🥛'
-  },
-  avocado: {
-    id: 'avocado',
-    name: 'авокадо',
-    label: 'Авокадо',
-    art: 'avocado',
-    title: 'Авокадо,<br>а ты хорош!',
-    mood: 'Кремовый герой найден',
-    kcal: '160', protein: '2,0 г', fat: '14,7 г', carbs: '8,5 г', fiber: '6,7 г',
-    note: 'Средние значения',
-    adviceEyebrow: 'ИДЕЯ ДЛЯ ПЕРЕКУСА',
-    adviceTitle: 'Авокадо любит тост',
-    adviceText: 'Разомни на тост, добавь яйцо или фасоль и каплю лимона. Кремово и бодро.',
-    adviceJoke: 'Зелёный, но точно не скучный 🥑'
-  },
-  bread: {
-    id: 'bread',
-    name: 'хлеб',
-    label: 'Хлеб',
-    art: 'bread',
-    title: 'Хлеб всему<br>перекус!',
-    mood: 'Хрустящий герой найден',
-    kcal: '247', protein: '8,5 г', fat: '3,3 г', carbs: '48,3 г', fiber: '6,0 г',
-    note: 'для цельнозернового',
-    adviceEyebrow: 'ИДЕЯ ДЛЯ ПЕРЕКУСА',
-    adviceTitle: 'Хлебу — сочную начинку',
-    adviceText: 'Добавь хумус, овощи или творожный сыр. Так обычный ломтик станет командой.',
-    adviceJoke: 'Бутерброд? Маленький отпуск 🥪'
-  }
+const $=s=>document.querySelector(s);
+let stream=null, scanTimer=null, analysisTimer=null, model=null, requestId=0;
+const foods={
+  tomato:{name:'помидор',title:'Кажется,<br>у нас томатч!',mood:'Проверь меня: я ещё могу перепутать',kcal:'18',protein:'0,9 г',fat:'0,2 г',carbs:'3,9 г',fiber:'1,2 г',advice:'Томат ищет компанию',text:'Добавь цельнозерновой тост и творог или хумус: больше белка и клетчатки, а перекус — сытнее.',joke:'Вкусно. Сытно. Без диетических драм. 😎'},
+  banana:{name:'банан',title:'Бананально,<br>но вкусно!',mood:'Проверь меня: я ещё могу перепутать',kcal:'89',protein:'1,1 г',fat:'0,3 г',carbs:'22,8 г',fiber:'2,6 г',advice:'Банан зовёт компанию',text:'Добавь натуральный йогурт и овсяные хлопья: белок и клетчатка сделают перекус сытнее.',joke:'Жёлтый, весёлый, без сложных манёвров 🍌'},
+  orange:{name:'апельсин',title:'Оранжевое<br>настроение!',mood:'Цитрусовый знакомец найден',kcal:'47',protein:'0,9 г',fat:'0,1 г',carbs:'11,8 г',fiber:'2,4 г',advice:'Дольки радости',text:'Добавь апельсин к йогурту без добавленного сахара. Целый фрукт сохраняет больше клетчатки, чем сок.',joke:'Солнечный, но не зазнался 🍊'},
+  broccoli:{name:'брокколи',title:'Кудрявый<br>знакомец!',mood:'Проверь меня: я ещё могу перепутать',kcal:'34',protein:'2,8 г',fat:'0,4 г',carbs:'6,6 г',fiber:'2,6 г',advice:'Зелёная компания',text:'Приготовь на пару и добавь к крупе и рыбе или фасоли. Получится разнообразный обед.',joke:'Маленькое деревце, большие планы 🥦'},
+  cucumber:{name:'огурец',title:'Хруст — и<br>знакомы!',mood:'Хрустящий знакомец найден',kcal:'15',protein:'0,7 г',fat:'0,1 г',carbs:'3,6 г',fiber:'0,5 г',advice:'Хрустящий перекус',text:'Огурец, хумус и цельнозерновой хлеб — простой перекус с белком и клетчаткой.',joke:'Хрустит громче, чем рассказывает 🥒'},
+  pepper:{name:'сладкий перец',title:'Перчик,<br>но не острый!',mood:'Цветной знакомец найден',kcal:'31',protein:'1,0 г',fat:'0,3 г',carbs:'6,0 г',fiber:'2,1 г',advice:'Добавим цвета',text:'Нарежь перец полосками и подай с хумусом. Или добавь к салату с фасолью.',joke:'Красивый, сочный, без драмы 🌶️'}
 };
-
-const state = { product: PRODUCTS.tomato, toastTimer: null };
-const $ = (selector) => document.querySelector(selector);
-
-function svgUse(id, className = '') {
-  return `<svg class="${className}" aria-hidden="true"><use href="#${id}"></use></svg>`;
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id))}
+function toast(text){const t=$('#toast');t.textContent=text;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),3500)}
+function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('#cameraWindow')?.classList.remove('live')}
+function closeAll(){requestId++;clearTimeout(scanTimer);clearInterval(analysisTimer);stopCamera();show('welcomeScreen')}
+async function openCamera(){
+ const id=++requestId; stopCamera(); show('cameraScreen'); $('#recognize').disabled=true;
+ const heading=document.querySelector('.camera-empty b'), note=document.querySelector('.camera-empty span');
+ heading.textContent='Камера готовится'; note.textContent='Разреши доступ и покажи один продукт';
+ try{
+  if(!navigator.mediaDevices?.getUserMedia)throw Error('secure');
+  const incoming=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+  if(id!==requestId){incoming.getTracks().forEach(t=>t.stop());return;}
+  stream=incoming;$('#video').srcObject=stream;await $('#video').play();
+  if(id!==requestId)return;
+  $('#cameraWindow').classList.add('live');$('#recognize').disabled=false;
+ }catch(e){if(id!==requestId)return;stopCamera();heading.textContent='Камера не открылась';
+  note.textContent=!window.isSecureContext?'Для камеры нужен HTTPS или localhost. Можно выбрать фото ниже.':e.name==='NotAllowedError'?'Разреши камеру в настройках браузера или выбери фото ниже.':'Проверь камеру или выбери фото ниже.';
+ }
 }
-
-function productArt(type, className = '') {
-  return svgUse(type, className);
-}
-
-function renderPicker() {
-  const picker = $('#productPicker');
-  picker.innerHTML = Object.values(PRODUCTS).map((product) => `
-    <button class="product-card ${product.id === state.product.id ? 'is-selected' : ''}" data-product="${product.id}" role="listitem" aria-label="Выбрать: ${product.label}">
-      ${productArt(product.art)}
-      <span>${product.label}</span>
-    </button>
-  `).join('');
-  picker.querySelectorAll('[data-product]').forEach((button) => {
-    button.addEventListener('click', () => {
-      state.product = PRODUCTS[button.dataset.product];
-      renderPicker();
-      showToast(`${state.product.label} выбран — жми «Сканировать» 💚`);
-    });
-  });
-}
-
-function showView(id) {
-  document.querySelectorAll('.app-view').forEach((view) => view.classList.add('is-hidden'));
-  $(id).classList.remove('is-hidden');
-}
-
-function setLoadingArt(product) {
-  const target = $('#loadingProductArt');
-  target.innerHTML = productArt(product.art);
-  target.querySelector('svg').classList.add('loading-art-svg');
-}
-
-function setResultArt(product) {
-  const target = $('#resultArt');
-  target.innerHTML = `
-    ${productArt(product.art, 'result-tomato')}
-    ${productArt('bag', 'result-bag')}
-    <span class="result-heart">♥</span>
-  `;
-  if (product.art !== 'tomato') {
-    target.querySelector('.result-tomato').classList.add('other-result-art');
-  }
-}
-
-function populateResult(product) {
-  $('#resultName').textContent = product.name;
-  $('#resultTitle').innerHTML = product.title;
-  $('#resultMood').textContent = product.mood;
-  $('#kcal').textContent = product.kcal;
-  $('#protein').textContent = product.protein;
-  $('#fat').textContent = product.fat;
-  $('#carbs').textContent = product.carbs;
-  $('#fiber').textContent = product.fiber;
-  $('#nutritionNote').textContent = product.note;
-  $('#adviceEyebrow').textContent = product.adviceEyebrow;
-  $('#adviceTitle').textContent = product.adviceTitle;
-  $('#adviceText').textContent = product.adviceText;
-  $('#adviceJoke').textContent = product.adviceJoke;
-  setResultArt(product);
-}
-
-function scanProduct() {
-  setLoadingArt(state.product);
-  $('#loadingTitle').textContent = state.product.id === 'tomato' ? 'Считываем вкусные вибрации…' : `Знакомимся с ${state.product.name}…`;
-  $('#loadingSubtitle').textContent = 'Секундочку, проверяем калории и характер';
-  $('#loadingJoke').textContent = state.product.id === 'tomato' ? 'Так-так, кто тут сочный?' : 'Так-так, что тут за вкусный тип?';
-  showView('#loadingView');
-  window.setTimeout(() => {
-    populateResult(state.product);
-    showView('#resultView');
-  }, 1600);
-}
-
-function showToast(message) {
-  const toast = $('#toast');
-  toast.textContent = message;
-  toast.classList.add('is-visible');
-  window.clearTimeout(state.toastTimer);
-  state.toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 2500);
-}
-
-function closePrototype() {
-  showView('#welcomeView');
-  showToast('Фича закрыта, но помидор всё ещё верит в тебя 🍅');
-}
-
-function openOffers() {
-  // Тестовая заглушка. В приложении здесь будет переход:
-  // tsxapp://app/personal_offers_list
-  showToast('Открываем персональные предложения 🎁');
-}
-
-function boot() {
-  renderPicker();
-  $('#scanButton').addEventListener('click', scanProduct);
-  $('#bonusButton').addEventListener('click', openOffers);
-  $('#againButton').addEventListener('click', () => showView('#welcomeView'));
-  document.querySelectorAll('[data-action="close"]').forEach((button) => button.addEventListener('click', closePrototype));
-}
-
-document.addEventListener('DOMContentLoaded', boot);
+function withTimeout(p,ms){return new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('timeout')),ms);p.then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});});}
+function beginAnalysis(image){const id=++requestId;stopCamera();show('analysisScreen');const title=$('#analysisTitle'),sub=$('#analysisSubtitle'),joke=$('#analysisJoke');let n=0;const texts=[['Разглядываю. Я пока маленький…','Маскот сверяет продукт, калории и БЖУ','Большое старание в маленьком пакетике 💚'],['Листаю свою вкусную энциклопедию…','Ищу знакомые очертания и цвет','Носик говорит: почти узнал!'],['Могу перепутать. Проверим вместе?','Ещё секундочку — я очень стараюсь','Не подглядываем 👀']];function change(){const x=texts[Math.min(n++,2)];title.textContent=x[0];sub.textContent=x[1];joke.textContent=x[2]}change();analysisTimer=setInterval(change,2500);scanTimer=setTimeout(async()=>{clearInterval(analysisTimer);let result=null;try{if(!window.mobilenet)throw Error();model=model||await withTimeout(mobilenet.load({version:2,alpha:1}),30000);const predictions=await withTimeout(model.classify(image,5),15000);const label=(predictions[0]?.className||'').toLowerCase();if(predictions[0]?.probability>=.65){if(label.includes('banana'))result='banana';else if(label.includes('orange'))result='orange';else if(label.includes('broccoli'))result='broccoli';else if(label.includes('cucumber'))result='cucumber';else if(label.includes('bell pepper')||label.includes('pepper'))result='pepper';else if(label.includes('tomato'))result='tomato'}}catch(e){}if(id===requestId)renderResult(result)},7500)}
+function renderResult(key){show('resultScreen');const f=foods[key];$('#nutrition').hidden=!f;$('#resultStatus').textContent=f?'● Похоже, это '+f.name:'● Пока не узнал продукт';$('#resultTitle').innerHTML=f?f.title:'Ой. Я ещё росточек!';$('#resultMood').textContent=f?f.mood:'Не буду придумывать БЖУ';if(f){$('#kcal').textContent=f.kcal;$('#protein').textContent=f.protein;$('#fat').textContent=f.fat;$('#carbs').textContent=f.carbs;$('#fiber').textContent=f.fiber;$('#nutritionNote').textContent='≈ Средние значения для продукта'}$('#adviceEyebrow').textContent=f?'ИДЕЯ ДЛЯ ПЕРЕКУСА':'МАСКОТ ЕЩЁ УЧИТСЯ';$('#adviceTitle').textContent=f?f.advice:'Знаю пока не всё';$('#adviceText').textContent=f?f.text:'Это может быть незнакомая еда, не еда или просто сложный ракурс. Покажи один продукт крупнее — попробую ещё раз.';$('#adviceJoke').textContent=f?f.joke:'Заглядывай ещё — будем знакомиться с продуктами вместе!';$('#giftTitle').textContent=f?'Совет — тебе. Обнимашки — мне!':'Я ещё росточек. Не сердись 💚';$('#giftText').textContent='За терпение — загляни за бонусом в приложение';}
+function capture(){const v=$('#video');if(!v.videoWidth)return toast('Камера ещё готовится — секундочку');const c=document.createElement('canvas');c.width=640;c.height=Math.round(v.videoHeight/v.videoWidth*640);c.getContext('2d').drawImage(v,0,0,c.width,c.height);beginAnalysis(c)}
+function photo(e){const file=e.target.files?.[0];if(!file)return;const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{beginAnalysis(img);URL.revokeObjectURL(url)};img.onerror=()=>{URL.revokeObjectURL(url);toast('Не удалось прочитать это фото. Попробуй ещё раз.')};img.src=url;e.target.value=''}
+document.addEventListener('DOMContentLoaded',()=>{$('#openCamera').onclick=openCamera;$('#recognize').onclick=capture;$('#photoInput').onchange=photo;$('#again').onclick=openCamera;document.querySelectorAll('[data-close]').forEach(x=>x.onclick=closeAll);$('#bonus').onclick=()=>{try{location.href='tsxapp://app/personal_offers_list'}catch(e){toast('Переход в персональные предложения доступен в приложении 💚')}}});window.addEventListener('pagehide',stopCamera);
